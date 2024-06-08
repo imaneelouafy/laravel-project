@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -30,4 +32,24 @@ class AuthController extends Controller
             'message' => 'Invalid email or password',
         ], 401);
     }
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users', // Unique email validation
+            'password' => 'required|string|min:8|confirmed', // Password confirmation
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // Hash password before storing
+        ]);
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'token' => $user->createToken('access_token')->plainTextToken,
+        ]);
+    }
+
 }
