@@ -2,54 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
 class AuthController extends Controller
 {
-
-
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
-        // Attempt login using Laravel's built-in authentication
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            // User authenticated successfully
+    
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user) {
             return response()->json([
-                'message' => 'Login successful',
-                'token' => $request->user()->createToken('access_token')->plainTextToken,
-            ]);
+                'message' => 'Invalid email or password',
+            ], 401);
         }
-        
-
+    
+        // If user exists, check the password
+        if (Hash::check($request->password, $user->password)) {
+            // Password matches, log in the user
+            Auth::login($user);
+            return Redirect::to('/layout')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+        }
+    
         // Login failed
         return response()->json([
             'message' => 'Invalid email or password',
         ], 401);
     }
+
+    
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users', // Unique email validation
-            'password' => 'required|string|min:8|confirmed', // Password confirmation
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
-
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash password before storing
+            'password' => Hash::make($request->password),
         ]);
+    
+        // Rediriger vers la page de connexion
+        return Redirect::to('/login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+    }
 
+    public function signOut(Request $request)
+    {
+        $request->user()->tokens()->delete(); // Revoke all tokens for the user
         return response()->json([
-            'message' => 'User registered successfully',
-            'token' => $user->createToken('access_token')->plainTextToken,
+            'message' => 'Logged out successfully',
         ]);
     }
 
