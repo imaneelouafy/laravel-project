@@ -29,7 +29,7 @@ class AuthController extends Controller
         if (Hash::check($request->password, $user->password)) {
             // Password matches, log in the user
             Auth::login($user);
-            return Redirect::to('/layout')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+            return Redirect::to('/layoutAdmin')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
         }
     
         // Login failed
