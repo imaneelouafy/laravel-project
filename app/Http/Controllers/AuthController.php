@@ -51,5 +51,12 @@ class AuthController extends Controller
             'token' => $user->createToken('access_token')->plainTextToken,
         ]);
     }
+    public function SignOut(Request $request)
+    {
+        $request->user()->tokens()->delete(); // Revoke all tokens for the user
+        return response()->json([
+            'message' => 'Logged out successfully',
+        ]);
+    }
 
 }
