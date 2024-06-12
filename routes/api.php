@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route de login
 Route::post('/login', [AuthController::class, 'login']);
 
-<<<<<<< HEAD
+
 Route::get('/company', [CompanyController::class, 'index']);
 Route::put('/company', [CompanyController::class, 'update']);
 
@@ -40,11 +40,6 @@ Route::apiResource('employees', EmployeeController::class);
 Route::post('employees/{id}/upload', [EmployeeController::class, 'uploadImage']);
 
 
-
-
-
-
-=======
 // Routes pour les propriétaires
 Route::get('/owners', [OwnerController::class, 'index']);
 Route::post('/owners', [OwnerController::class, 'store']);
@@ -77,4 +72,3 @@ Route::delete('/appartements/{id}', [AppartementController::class, 'destroy']);
 Route::group(['middleware' => 'auth:api'], function () {
     // Routes protégées par jeton d'accès
 });
->>>>>>> 2709ab769e53472c97fdd331aa0292e708b2cad3
