@@ -2,12 +2,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-<<<<<<< HEAD
+
 use App\Http\Controllers\OwnerController;
-=======
+
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\AppartementController;
->>>>>>> be62ca7392ea3788a1783ad978700b42a01be94f
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,6 @@ use App\Http\Controllers\AppartementController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-<<<<<<< HEAD
 
 // Route de login
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,7 +34,7 @@ Route::get('/owners/{id}', [OwnerController::class, 'show']);
 Route::put('/owners/{id}', [OwnerController::class, 'update']);
 Route::delete('/owners/{id}', [OwnerController::class, 'destroy']);
 
-=======
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -56,4 +55,3 @@ Route::post('/appartements', [AppartementController::class, 'store']);
 Route::get('/appartements/{id}', [AppartementController::class, 'show']);
 Route::put('/appartements/{id}', [AppartementController::class, 'update']);
 Route::delete('/appartements/{id}', [AppartementController::class, 'destroy']);
->>>>>>> be62ca7392ea3788a1783ad978700b42a01be94f
