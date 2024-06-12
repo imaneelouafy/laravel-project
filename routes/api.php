@@ -22,3 +22,8 @@ use App\Http\Controllers\AuthController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+Route::post('/logout', [AuthController::class, 'signOut']);
+
+Route::group(['middleware' => 'auth:api'], function () {
+    // Routes protégées par jeton d'accès
+});

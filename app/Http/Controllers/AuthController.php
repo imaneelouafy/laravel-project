@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 
 class AuthController extends Controller
@@ -16,28 +17,32 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
-        $user = User::where('email', $request->email)->first();
-    
-        if (!$user) {
-            return response()->json([
-                'message' => 'Invalid email or password',
-            ], 401);
-        }
-    
-        // If user exists, check the password
-        if (Hash::check($request->password, $user->password)) {
-            // Password matches, log in the user
-            Auth::login($user);
-            return Redirect::to('/layoutAdmin')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
-        }
-    
-        // Login failed
+
+        // Attempt to authenticate user using email and password
+        if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Authentication successful, retrieve authenticated user
+            $user = auth()->user();
+
+            Session::put('user_type', $user->type_id);
+
+            // Redirection basée sur le type d'utilisateur
+            if ($user->type_id === 1) {
+                return redirect('/layoutOwner')->with('success', 'Login successful!');
+                } elseif ($user->type_id === 0) {
+                    return redirect('/layoutAdmin')->with('success', 'Login successful!');
+                } else {
+                    // Gérer le type d'utilisateur inconnu (optionnel)
+                    return response()->json([
+                        'message' => 'Invalid user type',
+                    ], 401);
+            }
+
+        // Authentication failed, return error response
         return response()->json([
             'message' => 'Invalid email or password',
         ], 401);
     }
-
+}
     
     public function register(Request $request)
     {
