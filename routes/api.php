@@ -55,3 +55,7 @@ Route::post('/appartements', [AppartementController::class, 'store']);
 Route::get('/appartements/{id}', [AppartementController::class, 'show']);
 Route::put('/appartements/{id}', [AppartementController::class, 'update']);
 Route::delete('/appartements/{id}', [AppartementController::class, 'destroy']);
+
+Route::group(['middleware' => 'auth:api'], function () {
+    // Routes protégées par jeton d'accès
+});
